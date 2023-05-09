@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<head>
+<title>QuickDrop</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js"></script>
+<link rel="stylesheet" href="/css">
+</head>
+<style>
+button{
+width: 15%;
+margin-left: -10px;
+margin-right: -10px;
+}
+#r, #s{
+width: 100%;
+height: 50%;
+place-items: center;
+}
+div[id="r"] input{
+width: 20%;
+}
+
+div [id="s"] input{
+width: 50%;
+}
+</style>
+<body>
+<div id="app" style="width: 100%;">
+    <h2>QuickDrop</h2>
+  <button onclick="set('r')">Recieve</button> <button onclick="set('s')">Send</button>
+  <div style="display: grid;" id="r">
+    <p id="recieve">Your ID is <span id="id"></span>. To recieve a file, give this ID to the sender.</p>
+  </div>
+  <div style="display: none;" id="s">
+      <input required style="width: 20%;" id="to" type="text" placeholder="Recipient ID"><br>
+      <input required style="width: 20%;border-bottom: none;" id="file_in" type="file"><br>
+      <button onclick="r()" style="width: 30%;">Send!</button><br><br>
+  </div>
+</body>
+<script>
+const socket = io()
+
+socket.on('connect', () => {
+  console.log('Connected')
+document.getElementById('id').innerHTML = socket.id
+})
+
+const set = (show) => {
+document.getElementById(show).style.display = 'grid'
+document.getElementById(show == 'r' ? 's' : 'r').style.display = 'none'
+}
+
+const r = () => {
+  const file = document.getElementById('file_in').files[0]
+    const reader = new FileReader()
+  reader.addEventListener('load', () => {
+    const fileData = reader.result
+    if(document.getElementById('to').value == '') return alert('Please enter a recipient ID')
+    socket.emit('send', document.getElementById('to').value, fileData, file.name);
+})
+reader.readAsDataURL(file)
+}
+
+socket.on("download", (file, name) => {
+document.getElementById('recieve').innerHTML += `<br><br><a href="${file}" download="${name}">Download ${name}</a>`
+})
+
+
+
+if(localStorage.getItem('lang') == 'es') document.body.innerHTML = document.body.innerHTML.replace('Send', 'Enviar').replace('Recieve', 'Recibir').replace('File ID', 'ID del archivo').replace('File name', 'Nombre del archivo').replace('Send', 'Enviar').replace('Recieve', 'Recibir').replace('File ID', 'ID del archivo').replace('Name override', 'Anulación de nombre').replace('Upload', 'Subir').replace('Files will be deleted after download or in an hour.', 'Los archivos se eliminarán después de descargarlos o en una hora.').replace('Your ID is', 'Tu ID es').replace('To recieve a file, give this ID to the sender.', 'Para recibir un archivo, dale este ID al remitente.').replace('Recipient ID', 'ID del destinatario').replace('Send!', '¡Enviar!').replace('Download', 'Descargar')
+</script>

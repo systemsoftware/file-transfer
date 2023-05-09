@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+<title>File Room</title>
+<link rel="stylesheet" href="/css">
+</head>
+<style>
+#wrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+input{
+width: 92%;
+}
+</style>
+<div id="wrapper">
+<h2>Join</h2>
+<input id="room" type="text" placeholder="Room ID">
+<button onclick="location='/rooms/'+document.getElementById('room').value">Join</button>
+<h2>Create</h2>
+<button onclick="location='/rooms/create'">Create</button>
+</div>
+
+<script>
+if(localStorage.getItem("lang") == 'es'){
+document.body.innerHTML = document.body.innerHTML.replace('Join', 'Unirse').split('Create').join('Crear').replace('Room ID', 'ID de sala')
+}
+</script>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<head>
+<title>File Room</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.1/socket.io.js"></script>
+<link rel="stylesheet" href="/css">
+</head>
+
+<style>
+iframe{
+    width: 100%;
+    height: 200px !important;
+    border: none !important;
+    border-radius: 10px !important;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+a:hover{
+    text-decoration: underline;
+}
+.file{
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+button{
+width: 40%;
+}
+
+#files{
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+grid-gap: 10px;
+width: 100%;
+height: 100%;
+}
+
+.topdiv{
+    cursor: pointer;
+    width: 100%;
+    background-color: #6b6b6b;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-bottom: 5px;
+    padding-top: 5px;
+    cursor: pointer;
+}
+#id{
+float: left;
+padding-left: 100px;
+}
+</style>
+<br><br><br>
+<input id="file" type="file" style="display: none;">
+<div class="topdiv" onclick="document.getElementById('file').click()">
+<label id="up">Upload</label>
+</div>
+<div id="files"></div>
+<script>
+const socket = io()
+const id = window.location.pathname.split("/")[2]
+socket.emit("join_room", id)
+
+document.getElementById("file").addEventListener("change", () => {
+    const file = document.getElementById("file").files[0]
+    const reader = new FileReader()
+    reader.addEventListener("load", () => {
+        const fileData = reader.result
+        socket.emit("send", id, fileData, file.name)
+    })
+    reader.readAsDataURL(file)
+})
+
+socket.on("download", (file, name) => {
+const div = document.createElement("div")
+div.className = "file"
+const iframe = document.createElement("iframe")
+iframe.src = file
+iframe.frameBorder = 0
+const a = document.createElement("a")
+a.href = file
+a.download = name
+a.innerHTML = name
+div.appendChild(a)
+div.appendChild(document.createElement("br"))
+div.appendChild(iframe)
+div.appendChild(document.createElement("br"))
+document.getElementById("files").appendChild(div)
+const remove_button = document.createElement("button")
+remove_button.innerHTML = localStorage.getItem('lang') == 'es' ? "Eliminar" : "Remove"
+remove_button.addEventListener("click", () => {
+    socket.emit("remove", id, file)
+    div.remove()
+})
+div.appendChild(remove_button)
+const download_button = document.createElement("button")
+download_button.innerHTML = localStorage.getItem('lang') == 'es' ? "Descargar" : "Download"
+download_button.addEventListener("click", () => {
+    a.click()
+})
+div.appendChild(download_button)
+})
+if(localStorage.getItem('lang') == 'es') document.getElementById('up').innerHTML = 'Subir'
+</script>

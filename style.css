@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxygen:wght@300&display=swap');
+*{ outline: none; font-family: Oxygen; color: black; }
+a{ cursor: pointer; }
+body{
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-family: 'Oxygen' !important; overflow: none !important; background-color: #979797; overflow-x: hidden; overflow-y: hidden; 
+}
+
+input, select, .inp {
+    border: none;
+    border-bottom: 1px solid black;
+    background:none !important;
+    padding: 10px;
+    margin:10px;
+    width: 100%;
+    text-align: center;
+}
+
+img{
+    -khtml-user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+
+button, input[type="submit"], .button {
+    border: none;
+    background-color: gray;
+    border-radius: 10px;
+    padding: 10px;
+    padding-right: 15px;
+    padding-left: 15px;
+    margin:10px;
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    min-width: fit-content;
+}
+
+#prev button {
+width: 90%;
+}
+
+@media screen and (max-width: 1100px) {
+    #menu{
+    width: 30%;
+    }
+    #upload{
+    width: 30%;
+    }
+    #prev{
+    width: 30%;
+    }
+}
+
+img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-select: none;
+  }
